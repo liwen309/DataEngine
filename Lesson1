@@ -1,1 +1,38 @@
 Lesson1
+import numpy as np
+
+x1 = sum(np.arange(2,102,2))
+print('x1=', x1)
+
+
+import numpy as np
+
+from pandas import Series, DataFrame
+data = {'语文': [68, 95, 98, 90,80], '数学': [65, 76, 86, 88, 90], '英语': [30, 98, 88, 77, 90]}
+df = DataFrame(data, index=['张飞', '关羽', '刘备', '典韦', '许褚'])
+print(df)
+print(df.describe())
+
+df["总分"] =df.apply(lambda x:x.sum(),axis =1)
+df= df.sort_values('总分', ascending=False)
+df["名次"]=[1,2,3,4,5]
+print(df)import pandas as pd
+
+result = pd.read_csv('car_complain.csv')
+# print(result)
+result= result.drop('problem',1).join(result.problem.str.get_dummies(','))
+
+#统计品牌投诉总数,只统计id个数
+df1= result.groupby(['brand'])['id'].agg(['count']) #按品牌聚合，然后统计id个数
+df1 = df1.sort_values('count',ascending=False)
+print('品牌投诉总数为：\n',df1)
+
+#车型投诉总数
+df2= result.groupby(['car_model'])['id'].agg(['count']) #按品牌聚合，然后统计id个数
+df2 = df2.sort_values('count',ascending=False)
+print('车型投诉总数为：\n',df2)
+
+#品牌平均车型投诉
+df3= result.groupby(['brand','car_model'])['id'].agg(['count']).groupby(['brand']).mean()
+df3 = df3.sort_values('count',ascending=False)
+print('车型投诉总数为：\n',df3)
