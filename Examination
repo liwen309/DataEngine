@@ -41,10 +41,9 @@ from efficient_apriori import apriori
 dataset = pd.read_csv('./ordersheet.csv',encoding='gb18030')
 print(dataset.shape)
 
+dataset = dataset.sort_values(by='客户ID')
+# dataset.to_csv('./rules.csv')
 orders_series = dataset.set_index('客户ID')['产品名称']
-# print(orders_series)
-# orders_series.to_csv('car-price-data.csv',index=False)
-
 transactions = []
 temp_index = 0
 for i, v in orders_series.items():
@@ -59,5 +58,8 @@ for i, v in orders_series.items():
 itemsets,rules=apriori(transactions,min_support=0.02,min_confidence=0.5)
 print('频繁项集：',itemsets)
 print('关联规则：',rules)
+
+
+
 
 
