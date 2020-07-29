@@ -1,4 +1,7 @@
 
+
+
+
 import requests
 from bs4 import BeautifulSoup
 import  pandas as pd
@@ -11,16 +14,23 @@ content = html.text
 # 通过content创建BeautifulSoup对象
 soup = BeautifulSoup(content, 'html.parser')
 
-
 temp = soup.find('div', class_='search-result-list')
 # df = pd.DataFrame(columns=['data-id','cx-name','cx-price','img'])
-df = pd.DataFrame(columns=['cx-name','cx-price','img'])
+df = pd.DataFrame(columns=['车型名称','最低价格','最高价格','产品图片链接'])
 cx_list = soup.find_all('div', class_='search-result-list-item')
 for cx in cx_list:
     tp={}
-    tp['cx-name'] = cx.find('p', class_='cx-name text-hover').text
-    tp['cx-price'] = cx.find('p', class_='cx-price').text
-    tp['img'] = cx.img['src']
+    tp['车型名称'] = cx.find('p', class_='cx-name text-hover').text
+    a = cx.find('p', class_='cx-price').text
+    # print(a)
+    if a!='暂无':
+        b=tuple(a.split('-'))
+        tp['最低价格'] = b[0]+'万'
+        tp['最高价格'] = b[1]
+    else:
+        tp['最低价格'] = '暂无'
+        tp['最高价格'] = '暂无'
+    tp['产品图片链接'] = 'http:' + cx.img['src']
     df = df.append(tp, ignore_index=True)
 # print(df)
 df.to_csv('car-price-data.csv',index=False)
