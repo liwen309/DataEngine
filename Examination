@@ -1,7 +1,4 @@
-
-
-
-
+#第一题：采用Python爬虫采集大众品牌汽车在网上的报价，最终导出为CSV格式文件
 import requests
 from bs4 import BeautifulSoup
 import  pandas as pd
@@ -35,5 +32,32 @@ for cx in cx_list:
 # print(df)
 df.to_csv('car-price-data.csv',index=False)
 
+
+#第二题：使用Apriori算法，挖掘订单中的频繁项集及关联规则
+import pandas as pd
+import numpy as np
+from efficient_apriori import apriori
+
+dataset = pd.read_csv('./ordersheet.csv',encoding='gb18030')
+print(dataset.shape)
+
+orders_series = dataset.set_index('客户ID')['产品名称']
+# print(orders_series)
+# orders_series.to_csv('car-price-data.csv',index=False)
+
+transactions = []
+temp_index = 0
+for i, v in orders_series.items():
+    if i != temp_index:
+        temp_set = set()
+        temp_index = i
+        temp_set.add(v)
+        transactions.append(temp_set)
+    else:
+        temp_set.add(v)
+
+itemsets,rules=apriori(transactions,min_support=0.02,min_confidence=0.5)
+print('频繁项集：',itemsets)
+print('关联规则：',rules)
 
 
